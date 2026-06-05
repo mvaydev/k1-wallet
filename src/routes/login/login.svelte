@@ -1,11 +1,24 @@
 <script lang="ts">
 	import { pb } from '$lib/pb';
 
-	let { title, collectionName } = $props();
+	let {
+		title,
+		collectionName,
+		structureType,
+		isDirector,
+	}: {
+		title: string;
+		collectionName: string;
+		structureType: 'group' | 'campus';
+		isDirector?: boolean;
+	} = $props();
 	let isLogin = $state(true);
-	let fullname = $state('');
+	const idPattern = '[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}';
+
 	let email = $state('');
 	let password = $state('');
+	let fullname = $state('');
+	let structureId = $state('');
 
 	async function login() {
 		if (!email || !password) return;
@@ -15,11 +28,19 @@
 
 	async function registrate() {
 		if (!email || !password || !fullname) return;
+
+		await pb.collection(collectionName).create({
+			email,
+			password,
+			passwordConfirm: password,
+			fullname,
+			[structureType]: structureId,
+		});
 	}
 </script>
 
-<div class="flex justify-center">
-	<div class="card mt-16 w-96 bg-base-100 shadow-sm">
+<div class="flex h-svh items-center justify-center">
+	<div class="card w-96 bg-base-100 shadow-sm">
 		<div class="card-body">
 			<h1 class="card-title self-center text-2xl font-bold text-zinc-900">{title}</h1>
 			<h2 class="card-title self-center text-zinc-700">{isLogin ? 'Вход' : 'Регистрация'}</h2>
@@ -27,10 +48,10 @@
 			{#if !isLogin}
 				<fieldset class="fieldset">
 					<legend class="fieldset-legend">ФИО</legend>
-					<label for="email" class="validator input w-full">
+					<label for="fullname" class="validator input w-full">
 						<input
 							type="text"
-							id="email"
+							id="fullname"
 							placeholder="Иванов Иван Иванович"
 							pattern="^[А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+( [А-ЯЁ][а-яё]+)?$"
 							maxlength="150"
@@ -55,6 +76,27 @@
 				</label>
 				<p class="validator-hint hidden">Введите правильную почту</p>
 			</fieldset>
+
+			{#if !isLogin && !isDirector}
+				<fieldset class="fieldset">
+					<legend class="fieldset-legend"
+						>{structureType == 'group' ? 'Код группы' : 'Код школы'}</legend
+					>
+					<label for="structure" class="validator input w-full">
+						<input
+							type="text"
+							id="structure"
+							placeholder="AB1-CDE-23F"
+							pattern={idPattern}
+							required
+							bind:value={structureId}
+						/>
+					</label>
+					<p class="validator-hint hidden">
+						{structureType == 'group' ? 'Код группы' : 'Код школы'} не соответствует формату
+					</p>
+				</fieldset>
+			{/if}
 
 			<fieldset class="fieldset">
 				<legend class="fieldset-legend">Пароль</legend>

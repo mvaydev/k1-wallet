@@ -2,4 +2,4 @@
 	import Login from '../login.svelte';
 </script>
 
-<Login title="Ученик" collectionName="student"></Login>
+<Login title="Ученик" collectionName="student" structureType="group"></Login>
