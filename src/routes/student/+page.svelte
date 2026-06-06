@@ -1,1 +1,36 @@
-<h1>Student</h1>
+<script lang="ts">
+	import { pb } from '$lib/pb';
+
+	let student = $state();
+
+	async function loadStudent() {
+		student = await pb.collection('student').getOne(pb.authStore.record!.id);
+	}
+
+	loadStudent();
+</script>
+
+<div class="m-auto flex max-w-2xl flex-col space-y-2 p-4">
+	<p class="my-4 text-2xl font-bold">Петров Сегрей</p>
+
+	<div class="stats bg-base-100 shadow">
+		<div class="stat">
+			<div class="stat-title">Копилка</div>
+			<div class="stat-value">350 ₭</div>
+			<div class="stat-desc">₭ - Символ валюты киберон</div>
+		</div>
+	</div>
+
+	<div class="card bg-base-100 shadow card-lg">
+		<div class="card-body">
+			<h2 class=" card-title font-bold">Группа</h2>
+			<br />
+			<p class="text-zinc-700"><b>Дата и время:</b> Воскресенье в 12:15</p>
+			<p class="text-zinc-700"><b>Адрес:</b> г.Братск, пр. Ленина, д 24</p>
+			<br />
+			<div class="badge badge-primary">8-11 Лет</div>
+		</div>
+	</div>
+
+	<button class="btn w-min btn-outline btn-error">Выйти</button>
+</div>
