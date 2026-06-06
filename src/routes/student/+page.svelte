@@ -11,24 +11,30 @@
 </script>
 
 <div class="m-auto flex max-w-2xl flex-col space-y-2 p-4">
-	<p class="my-4 text-2xl font-bold">Петров Сегрей</p>
-
-	<div class="stats bg-base-100 shadow">
+	<div class="stats w-full bg-base-100 shadow">
 		<div class="stat">
 			<div class="stat-title">Копилка</div>
 			<div class="stat-value">350 ₭</div>
-			<div class="stat-desc">₭ - Символ валюты киберон</div>
 		</div>
 	</div>
 
 	<div class="card bg-base-100 shadow card-lg">
 		<div class="card-body">
-			<h2 class=" card-title font-bold">Группа</h2>
-			<br />
-			<p class="text-zinc-700"><b>Дата и время:</b> Воскресенье в 12:15</p>
-			<p class="text-zinc-700"><b>Адрес:</b> г.Братск, пр. Ленина, д 24</p>
-			<br />
-			<div class="badge badge-primary">8-11 Лет</div>
+			<h2 class="font-extrabold">ГРУППА</h2>
+			<div class="flex flex-col gap-3">
+				<div>
+					<h3 class="stat-title">Время занятий</h3>
+					<p>Воскресенье в 12:15</p>
+				</div>
+				<div>
+					<h3 class="stat-title">Адрес</h3>
+					<p>г.Братск, пр. Ленина, д 24</p>
+				</div>
+				<div>
+					<h3 class="stat-title">Возраст</h3>
+					<p>8-11 Лет</p>
+				</div>
+			</div>
 		</div>
 	</div>
 
