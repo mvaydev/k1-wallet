@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { pb } from '$lib/pb';
 
 	let {
@@ -12,6 +13,10 @@
 		structureType: 'group' | 'campus';
 		isDirector?: boolean;
 	} = $props();
+
+	// svelte-ignore state_referenced_locally
+	if (pb.authStore.isValid) goto(`/${collectionName}`);
+
 	let isLogin = $state(true);
 	const idPattern = '[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}';
 
@@ -24,6 +29,8 @@
 		if (!email || !password) return;
 
 		await pb.collection(collectionName).authWithPassword(email, password);
+
+		goto(`/${collectionName}`);
 	}
 
 	async function registrate() {

@@ -1,3 +1,11 @@
+<script>
+	import { goto } from '$app/navigation';
+	import { pb } from '$lib/pb';
+
+	// svelte-ignore state_referenced_locally
+	if (pb.authStore.isValid) goto(`/${pb.authStore.record?.collectionName}`);
+</script>
+
 <div class="flex justify-center">
 	<div class="card mt-16 w-96 bg-base-100 shadow-sm">
 		<div class="card-body">
