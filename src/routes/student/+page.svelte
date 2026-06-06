@@ -1,9 +1,14 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
+	import Navbar from '$lib/components/navbar.svelte';
 	import { pb, type Campus, type Group, type Student } from '$lib/pb';
 
-	if (browser && !pb.authStore.isValid) goto('/login');
+	if (
+		!pb.authStore.isValid ||
+		!pb.authStore.record ||
+		pb.authStore.record.collectionName != 'student'
+	)
+		goto('/login');
 
 	let isLoading = $state(true);
 	let student = $state() as Student;
@@ -18,11 +23,6 @@
 		isLoading = false;
 	}
 
-	async function logout() {
-		pb.authStore.clear();
-		goto('/login');
-	}
-
 	load();
 </script>
 
@@ -32,6 +32,8 @@
 			<span class="loading loading-spinner text-accent"></span>
 		</div>
 	{:else}
+		<Navbar />
+
 		<div class="m-auto flex max-w-2xl flex-col space-y-2 p-4">
 			<div class="stats w-full bg-base-100 shadow">
 				<div class="stat">
@@ -59,8 +61,6 @@
 					</div>
 				</div>
 			</div>
-
-			<button class="btn w-min btn-outline btn-error" onclick={logout}>Выйти</button>
 		</div>
 	{/if}
 </div>
