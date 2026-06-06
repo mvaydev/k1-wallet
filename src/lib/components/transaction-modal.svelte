@@ -35,7 +35,7 @@
 			<p class="label">Необязательно (макс. 500 символов)</p>
 		</fieldset>
 
-		<div class="modal-action">
+		<div class="modal-action justify-start">
 			<button class="btn btn-accent">{isNew ? 'Добавить' : 'Изменить'}</button>
 			{#if !isNew}
 				<button class="btn btn-error">Удалить</button>

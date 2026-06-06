@@ -30,3 +30,19 @@ export interface Director {
 	email: string;
 	fullname: string;
 }
+
+export interface Staff {
+	id: string;
+	email: string;
+	fullname: string;
+	role?: 'Ассистент' | 'Тьютор' | 'Менеджер';
+	campus: string;
+}
+
+export interface KiberonTransaction {
+	id: string;
+	amount: number;
+	comment?: string;
+	student: string;
+	created: string;
+}
