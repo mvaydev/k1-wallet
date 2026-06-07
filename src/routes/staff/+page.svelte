@@ -3,7 +3,6 @@
 	import { pb, type KiberonTransaction, type Staff, type Student } from '$lib/pb';
 	import Navbar from '$lib/components/navbar.svelte';
 	import TransactionModal from '$lib/components/transaction-modal.svelte';
-	import Pagination from '$lib/components/pagination.svelte';
 	import type { ListResult } from 'pocketbase';
 
 	if (
@@ -14,30 +13,30 @@
 		goto('/login');
 
 	let staff = $state() as Staff;
-	let tableData = $state([]) as Array<{ student_name: string } & KiberonTransaction>;
+	let tableData = $state([]) as Array<{ student_data: Student } & KiberonTransaction>;
 	let isLoading = $state(true);
 	let isNew = $state(false);
-	let active = $state(1), // Pagination
-		total = $state(1);
+	let active = $state(1);
+	let total = $state(1);
 
 	async function load() {
 		staff = await pb.collection('staff').getOne(pb.authStore.record!.id);
+		await loadTransactions(1);
+		isLoading = false;
+	}
+
+	async function loadTransactions(page: number) {
+		tableData = [];
 		const transactions: ListResult<KiberonTransaction> = await pb
 			.collection('kiberon_transaction')
-			.getList(active, 10);
+			.getList(page, 10);
+		total = transactions.totalPages;
 
 		for (let t of transactions.items) {
 			const student: Student = await pb.collection('student').getOne(t.student);
 			t.created = new Intl.DateTimeFormat('ru').format(new Date(t.created));
-			tableData.push({ ...t, student_name: student.fullname });
+			tableData.push({ ...t, student_data: student });
 		}
-
-		isLoading = false;
-	}
-
-	async function logout() {
-		pb.authStore.clear();
-		goto('/login');
 	}
 
 	function showTransactionModal() {
@@ -71,7 +70,6 @@
 
 			<div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
 				<table class="table">
-					<!-- head -->
 					<thead>
 						<tr>
 							<th>Ученик</th>
@@ -84,7 +82,7 @@
 					<tbody>
 						{#each tableData as t}
 							<tr>
-								<td>{t.student_name}</td>
+								<td>{t.student_data.fullname}</td>
 								<td>{t.amount}</td>
 								<td>{t.comment}</td>
 								<td>{t.created}</td>
@@ -99,7 +97,19 @@
 				</table>
 			</div>
 
-			<Pagination {active} {total} />
+			<div class="join">
+				<button
+					class="btn join-item"
+					disabled={active < 2}
+					onclick={() => loadTransactions(--active)}>«</button
+				>
+				<button class="btn join-item">Страница {active}</button>
+				<button
+					class="btn join-item"
+					disabled={active > total - 1}
+					onclick={() => loadTransactions(++active)}>»</button
+				>
+			</div>
 		</div>
 	{/if}
 </div>
