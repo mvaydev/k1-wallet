@@ -3,7 +3,6 @@
 	import { pb, type KiberonTransaction, type Staff, type Student } from '$lib/pb';
 	import Navbar from '$lib/components/navbar.svelte';
 	import TransactionModal from '$lib/components/transaction-modal.svelte';
-	import type { ListResult } from 'pocketbase';
 
 	if (
 		!pb.authStore.isValid ||
@@ -16,8 +15,6 @@
 	let tableData = $state([]) as Array<{ student_data: Student } & KiberonTransaction>;
 	let isLoading = $state(true);
 	let isNew = $state(false);
-	let active = $state(1);
-	let total = $state(1);
 
 	async function load() {
 		staff = await pb.collection('staff').getOne(pb.authStore.record!.id);
@@ -27,12 +24,11 @@
 
 	async function loadTransactions(page: number) {
 		tableData = [];
-		const transactions: ListResult<KiberonTransaction> = await pb
+		const transactions: KiberonTransaction[] = await pb
 			.collection('kiberon_transaction')
-			.getList(page, 10);
-		total = transactions.totalPages;
+			.getFullList();
 
-		for (let t of transactions.items) {
+		for (let t of transactions) {
 			const student: Student = await pb.collection('student').getOne(t.student);
 			t.created = new Intl.DateTimeFormat('ru').format(new Date(t.created));
 			tableData.push({ ...t, student_data: student });
@@ -95,20 +91,6 @@
 						{/each}
 					</tbody>
 				</table>
-			</div>
-
-			<div class="join">
-				<button
-					class="btn join-item"
-					disabled={active < 2}
-					onclick={() => loadTransactions(--active)}>«</button
-				>
-				<button class="btn join-item">Страница {active}</button>
-				<button
-					class="btn join-item"
-					disabled={active > total - 1}
-					onclick={() => loadTransactions(++active)}>»</button
-				>
 			</div>
 		</div>
 	{/if}
