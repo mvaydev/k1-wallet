@@ -12,17 +12,19 @@
 		goto('/login');
 
 	let staff = $state() as Staff;
+	let students = $state([]) as Student[];
 	let tableData = $state([]) as Array<{ student_data: Student } & KiberonTransaction>;
 	let isLoading = $state(true);
-	let isNew = $state(false);
+	let selectedTransaction: KiberonTransaction | undefined = $state();
 
 	async function load() {
 		staff = await pb.collection('staff').getOne(pb.authStore.record!.id);
-		await loadTransactions(1);
+		students = await pb.collection('student').getFullList();
+		await loadTransactions();
 		isLoading = false;
 	}
 
-	async function loadTransactions(page: number) {
+	async function loadTransactions() {
 		tableData = [];
 		const transactions: KiberonTransaction[] = await pb
 			.collection('kiberon_transaction')
@@ -40,12 +42,12 @@
 	}
 
 	function createTransaction() {
-		isNew = true;
+		selectedTransaction = undefined;
 		showTransactionModal();
 	}
 
-	function editTransaction() {
-		isNew = false;
+	function editTransaction(t: KiberonTransaction) {
+		selectedTransaction = t;
 		showTransactionModal();
 	}
 
@@ -59,7 +61,7 @@
 		</div>
 	{:else}
 		<Navbar />
-		<TransactionModal {isNew} />
+		<TransactionModal {selectedTransaction} {students} />
 
 		<div class="m-auto mt-2 flex max-w-4xl flex-col gap-2">
 			<button class="btn" onclick={createTransaction}>Создать транзакцию</button>
@@ -83,7 +85,7 @@
 								<td>{t.comment}</td>
 								<td>{t.created}</td>
 								<td>
-									<button class="btn btn-link" onclick={editTransaction}
+									<button class="btn btn-link" onclick={() => editTransaction(t)}
 										>Изменить</button
 									>
 								</td>

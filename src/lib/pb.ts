@@ -1,6 +1,4 @@
-import PocketBase from 'pocketbase';
-
-export const pb = new PocketBase(import.meta.env.VITE_POCKETBASE_URL);
+import PocketBase, { RecordService } from 'pocketbase';
 
 export interface Student {
 	id: string;
@@ -46,3 +44,15 @@ export interface KiberonTransaction {
 	student: string;
 	created: string;
 }
+
+interface TypedPocketBase extends PocketBase {
+	collection(idOrName: string): RecordService; // default fallback for any other collection
+	collection(idOrName: 'student'): RecordService<Student>;
+	collection(idOrName: 'group'): RecordService<Group>;
+	collection(idOrName: 'campus'): RecordService<Group>;
+	collection(idOrName: 'director'): RecordService<Group>;
+	collection(idOrName: 'staff'): RecordService<Group>;
+	collection(idOrName: 'kiberon_transaction'): RecordService<KiberonTransaction>;
+}
+
+export const pb = new PocketBase(import.meta.env.VITE_POCKETBASE_URL) as TypedPocketBase;
