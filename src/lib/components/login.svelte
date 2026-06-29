@@ -38,6 +38,7 @@
 
 		await pb.collection(collectionName).create({
 			email,
+			emailVisibility: true,
 			password,
 			passwordConfirm: password,
 			fullname,

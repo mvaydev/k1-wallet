@@ -14,7 +14,7 @@
 			<a class="text-xl" href="/">K1 Wallet</a>
 		</div>
 		<div class="navbar-end">
-			<button class="btn" onclick={logout}>Выйти</button>
+			<button class="btn btn-soft btn-error" onclick={logout}>Выйти</button>
 		</div>
 	</div>
 </div>
